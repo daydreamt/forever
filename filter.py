@@ -68,6 +68,8 @@ with open("enwiki-20170120-pages-articles.xml") as input_file:
                 print(name)
                 spouses = get_spouse(page)
                 spouse_dict[name] = spouses
+
+    sorted(spouse_dict, key=lambda x: len(spouse_dict[x]), reverse=True)[0:10]
     f = open("bla.txt", "w")
     f.writelines(page)
 
