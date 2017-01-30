@@ -1,7 +1,4 @@
-# Some ideas: get brithdate
-# Get number of marriages
-# with min, max, mean
-# Then make dataset
+# Get nationality
 
 import re
 import csv
@@ -102,8 +99,8 @@ def classify_gender(page):
     else:
         return "female"
 
+result_tuples = []
 with open("enwiki-20170120-pages-articles.xml") as input_file:
-    result_tuples = []
     l = input_file.readline().strip()
     while(l != "<page>"):
         l = input_file.readline().strip()
@@ -114,20 +111,20 @@ with open("enwiki-20170120-pages-articles.xml") as input_file:
         if len(page) < 10: break
         if ("spouse" in page.lower()):
             if len(get_spouse(page)) > 0:
-                #blas.append(page)
                 name = page[17:59].split("<")[0].replace(",","#")
                 birth_year = get_birthdate(page)
                 death_year = get_deathdate(page)
                 hec, shec = get_he_she_count(page)
                 gender = classify_gender(page)
-                print(name, birth_year, death_year, classify_gender(page))
+                #print(name, birth_year, death_year, classify_gender(page))
+                if (len(result_tuples) % 500 == 0):
+                    print(len(result_tuples))
                 spouses = get_spouse(page)
                 nmarriages = len(spouses)
                 lens = [int(x[1]) - int(x[0]) for x in spouses]
                 max_duration = max(lens)
                 min_duration = min(lens)
                 avg_duration = float(sum(lens)) / nmarriages
-                #spouse_dict[name] = spouses
                 article_size = len(page)
                 result_tuples.append((name, birth_year, death_year,
                                       gender, hec, shec, nmarriages,
@@ -135,18 +132,18 @@ with open("enwiki-20170120-pages-articles.xml") as input_file:
                                       avg_duration, article_size))
 
 
-    with open('data.csv','wb') as out:
-        csv_out=csv.writer(out)
-        csv_out.writerow(['name','birth_year', 'death_year',
-                          'gender', 'hec', 'shec', 'nmarriages',
-                          'max_duration', 'min_duration',
-                          'avg_duration', 'article_size'])
-        for row in result_tuples:
-            csv_out.writerow(row)
-    sorted(spouse_dict, key=lambda x: len(spouse_dict[x]), reverse=True)[0:10]
-    f = open("bla.txt", "w")
-    f.writelines(page)
-    f2 = open("bla3.txt", "w")
-    f2.writelines(page[:3359])
+with open('data.csv','wb') as out:
+    csv_out=csv.writer(out)
+    csv_out.writerow(['name','birth_year', 'death_year',
+                      'gender', 'hec', 'shec', 'nmarriages',
+                      'max_duration', 'min_duration',
+                      'avg_duration', 'article_size'])
+    for row in result_tuples:
+        csv_out.writerow(row)
+        
+f = open("bla.txt", "w")
+f.writelines(page)
+f2 = open("bla3.txt", "w")
+f2.writelines(page[:3359])
 
     
